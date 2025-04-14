@@ -1,5 +1,6 @@
 import {
   applyParamsToScript,
+  BlockfrostProvider,
   deserializeAddress,
   IFetcher,
   MeshTxBuilder,
@@ -10,10 +11,9 @@ import {
   serializeAddressObj,
   serializePlutusScript,
   UTxO,
-  BlockfrostProvider,
 } from "@meshsdk/core";
-import { Plutus } from "../types";
-import { APP_WALLET_ADDRESS, BLOCKFROST_API_KEY, title, appNetworkId } from "../constants";
+import {Plutus} from "../types";
+import {APP_WALLET_ADDRESS, appNetworkId, BLOCKFROST_API_KEY, title} from "../constants";
 import plutus from "../../plutus.json";
 
 export class MeshAdapter {
