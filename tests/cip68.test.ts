@@ -14,7 +14,32 @@ describe("Mint, Burn, Update, Remove Assets (NFT/TOKEN) CIP68", function () {
       submitter: blockfrostProvider,
       key: {
         type: "mnemonic",
-        words: process.env.APP_MNEMONIC?.split(" ") || [],
+        words: process.env.APP_MNEMONIC?.split(" ") || [
+            "kitten",
+            "right",
+            "bounce",
+            "rebuild",
+            "matrix",
+            "bulk",
+            "fork",
+            "boss",
+            "fame",
+            "govern",
+            "gauge",
+            "sand",
+            "property",
+            "wheel",
+            "cupboard",
+            "endorse",
+            "test",
+            "dune",
+            "squirrel",
+            "canvas",
+            "ordinary",
+            "waste",
+            "animal",
+            "budget"
+        ],
       },
     });
   });
