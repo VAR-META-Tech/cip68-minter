@@ -1,12 +1,12 @@
 import {
-  CIP68_100,
-  CIP68_222,
-  deserializeAddress,
-  mConStr0,
-  mConStr1,
-  metadataToCip68,
-  stringToHex,
-  UTxO
+    CIP68_100,
+    CIP68_222,
+    deserializeAddress,
+    mConStr0,
+    mConStr1,
+    metadataToCip68,
+    stringToHex,
+    UTxO
 } from "@meshsdk/core";
 
 import {MeshAdapter} from "../adapters/mesh.adapter";
@@ -17,12 +17,13 @@ import {getPkHash} from "../utils";
 
 export class Cip68Contract extends MeshAdapter implements ICip68Contract {
   /**
-   * @method Mint
+   * @method mint
    * @description Mint Asset (NFT/Token) with CIP68
-   * @param assetName - string
-   * @param metadata - Record<string, string>
-   * @param quantity - string
-   *
+   * @param params
+   * assetName - string
+   * metadata - Record<string, string>
+   * quantity - string
+   * @param utxo
    * @returns unsignedTx
    */
   mint = async (
@@ -140,10 +141,11 @@ export class Cip68Contract extends MeshAdapter implements ICip68Contract {
   };
 
   /**
-   * @method Burn
+   * @method burn
    * @description Burn Asset (NFT/Token) with CIP68
-   * @param assetName - string
-   * @param quantity - string
+   * @param params
+   * assetName - string
+   * quantity - string
    *
    * @returns unsignedTx
    */
@@ -214,11 +216,12 @@ export class Cip68Contract extends MeshAdapter implements ICip68Contract {
   };
 
   /**
-   * @method Update
+   * @method update
    * @description Update Asset (NFT/Token) with CIP68
-   * @param assetName - string
-   * @param metadata - Record<string, string>
-   * @param txHash - string
+   * @param params
+   * assetName - string
+   * metadata - Record<string, string>
+   * txHash - string
    * @returns
    */
   update = async (params: { assetName: string; metadata: Record<string, string>; txHash?: string }[]) => {
@@ -258,8 +261,8 @@ export class Cip68Contract extends MeshAdapter implements ICip68Contract {
   };
 
   /**
-   * @method CreateReferenceScriptMint
-   * @description Create reference script for mint transaction
+   * @method createReferenceScriptMint
+   * @description Create a reference script for mint transaction
    *
    * @returns unsigned transaction
    */
@@ -274,7 +277,6 @@ export class Cip68Contract extends MeshAdapter implements ICip68Contract {
           quantity: "20000000",
         },
       ])
-
       .txOutReferenceScript(this.mintScriptCbor, "V3")
       .txOutDatumHashValue("")
       .changeAddress(walletAddress)
@@ -285,8 +287,8 @@ export class Cip68Contract extends MeshAdapter implements ICip68Contract {
   };
 
   /**
-   * @method CreateReferenceScriptStore
-   * @description Create reference script for store transaction
+   * @method createReferenceScriptStore
+   * @description Create a reference script for store transaction
    * @returns unsigned transaction
    */
   createReferenceScriptStore = async (STORE_REFERENCE_SCRIPT_ADDRESS: string) => {
@@ -299,7 +301,6 @@ export class Cip68Contract extends MeshAdapter implements ICip68Contract {
           quantity: "20000000",
         },
       ])
-
       .txOutReferenceScript(this.storeScriptCbor, "V3")
       .txOutDatumHashValue("")
       .changeAddress(walletAddress)

@@ -1,18 +1,7 @@
-import { BlockfrostProvider, UTxO } from "@meshsdk/core";
+import {BlockfrostProvider, UTxO} from "@meshsdk/core";
 import crypto from "crypto";
 import plutus from "../../plutus.json";
 import cbor from "cbor";
-
-export async function getPkHash(datum: string) {
-  const cborDatum: Buffer = Buffer.from(datum, "hex");
-  const decoded = await cbor.decodeFirst(cborDatum);
-  for (const [key, value] of decoded.value[0]) {
-    if (key.toString("utf-8") === "_pk") {
-      return value.toString("hex");
-    }
-  }
-  return null;
-}
 
 /**
  * @description Read validator compilecode from plutus
@@ -92,4 +81,15 @@ export async function fetchUtxo(provider: BlockfrostProvider, address: string, t
   return utxos.find((utxo) => {
     return utxo.input.txHash == txHash;
   });
+}
+
+export async function getPkHash(datum: string) {
+  const cborDatum: Buffer = Buffer.from(datum, "hex");
+  const decoded = await cbor.decodeFirst(cborDatum);
+  for (const [key, value] of decoded.value[0]) {
+    if (key.toString("utf-8") === "_pk") {
+      return value.toString("hex");
+    }
+  }
+  return null;
 }

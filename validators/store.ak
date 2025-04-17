@@ -1,15 +1,15 @@
 use aiken/crypto.{VerificationKeyHash}
+use cardano/address
 use cardano/assets.{without_lovelace}
-use cardano/transaction.{InlineDatum, OutputReference, Transaction, find_input}
+use cardano/transaction.{
+  InlineDatum, Output, OutputReference, Transaction, find_input,
+}
 use cardano/tx
 use cip68minter/types.{Remove, StoreRedeemer, Update}
 use cip68minter/utils
 use types/cip68.{CIP68}
 use validation/find.{output_by_addr_value}
 
-// @validator: Store
-// @description: Validator is used to update and remove tokens (nft, token) according to CIP68
-// @params - issuer: The verification key hash of the token issuer
 validator store(issuer: VerificationKeyHash) {
   spend(
     datum: Option<CIP68>,
@@ -33,13 +33,6 @@ validator store(issuer: VerificationKeyHash) {
       False -> False
       True ->
         when redeemer is {
-          // @action: Update - Condition for update assets
-          // - signed_by_author: When a user updates an asset, there is an author field in the datum of the store validator. 
-          // At the same time, the user must also provide a signature to update the fields in the datum to change the asset's metadata.
-          // - check_store_address: Check that the reference token used to change metadata exists and is sent to the store validator's address.
-          // - check_format_metadata: Check that the specified fields such as name, image, media_type, author exist in the store validator's datum (aka asset metadata).
-          // These fields are required. The value of author cannot be changed.
-          // - check_reference_token: Check the token to update the metadata that exists in the transaction output.
           Update -> {
             let utxo_output =
               output_by_addr_value(outputs, script_address, reference_token)
@@ -56,10 +49,10 @@ validator store(issuer: VerificationKeyHash) {
               check_author,
             }
           }
-          // @action: Remove - Condition for remove assets
-          // - signed_by_author: When the user performs asset removal, the datum of the store validator contains the author field
-          // and the user must provide a signature to identify that this is the author who performed the asset minting transaction.
-          Remove -> True
+          Remove -> {
+            let author_address = address.from_verification_key(author_input)
+            utils.check_output_remove(outputs, author_address)
+          }
         }
     }
   }

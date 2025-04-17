@@ -1,16 +1,16 @@
 import {
-  applyParamsToScript,
-  BlockfrostProvider,
-  deserializeAddress,
-  IFetcher,
-  MeshTxBuilder,
-  MeshWallet,
-  PlutusScript,
-  resolveScriptHash,
-  scriptAddress,
-  serializeAddressObj,
-  serializePlutusScript,
-  UTxO,
+    applyParamsToScript,
+    BlockfrostProvider,
+    deserializeAddress,
+    IFetcher,
+    MeshTxBuilder,
+    MeshWallet,
+    PlutusScript,
+    resolveScriptHash,
+    scriptAddress,
+    serializeAddressObj,
+    serializePlutusScript,
+    UTxO,
 } from "@meshsdk/core";
 import {Plutus} from "../types";
 import {APP_WALLET_ADDRESS, appNetworkId, BLOCKFROST_API_KEY, title} from "../constants";
@@ -20,7 +20,6 @@ export class MeshAdapter {
   protected meshTxBuilder: MeshTxBuilder;
   protected wallet: MeshWallet;
   protected fetcher: IFetcher;
-  protected pubKeyExchange: string;
   protected pubKeyIssuer: string;
   protected mintCompileCode: string;
   protected storeCompileCode: string;
@@ -41,11 +40,10 @@ export class MeshAdapter {
       evaluator: blockfrostProvider,
     });
     this.pubKeyIssuer = deserializeAddress(this.wallet.getChangeAddress()).pubKeyHash;
-    this.pubKeyExchange = deserializeAddress(APP_WALLET_ADDRESS).pubKeyHash;
     this.mintCompileCode = this.readValidator(plutus as Plutus, title.mint);
     this.storeCompileCode = this.readValidator(plutus as Plutus, title.store);
 
-    this.storeScriptCbor = applyParamsToScript(this.storeCompileCode, [this.pubKeyExchange, BigInt(1), this.pubKeyIssuer]);
+    this.storeScriptCbor = applyParamsToScript(this.storeCompileCode, [this.pubKeyIssuer]);
 
     this.storeScript = {
       code: this.storeScriptCbor,
@@ -63,8 +61,6 @@ export class MeshAdapter {
 
     this.storeScriptHash = deserializeAddress(this.storeAddress).scriptHash;
     this.mintScriptCbor = applyParamsToScript(this.mintCompileCode, [
-      this.pubKeyExchange,
-      BigInt(1),
       this.storeScriptHash,
       deserializeAddress(APP_WALLET_ADDRESS).stakeCredentialHash,
       this.pubKeyIssuer,
